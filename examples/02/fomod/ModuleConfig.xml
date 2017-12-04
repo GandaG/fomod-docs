@@ -1,0 +1,29 @@
+<!-- For this second example, let's make use of dependencies.
+     Before starting the installation, dependencies
+     make sure the things you specify are in place.
+     -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://qconsulting.ca/fo3/ModConfig5.0.xsd">
+
+    <moduleName>Example Mod</moduleName>
+
+    <!-- The "And" operator means that all dependencies
+         below this tag must be true for it to be true
+         as well. The other possible value is "Or".
+         -->
+    <moduleDependencies operator="And">
+        <!-- Make sure other_file exists!
+             Another possible value for state is "Missing"
+             -->
+        <fileDependency file="other_file" state="Active"/>
+    </moduleDependencies>
+
+    <!-- Now before installing our lovely and empty
+         data file in requiredInstallFiles,
+         we need to make sure other_file exists
+         -->
+    <requiredInstallFiles>
+        <file source="data_file" destination=""/>
+    </requiredInstallFiles>
+
+</config>

@@ -88,3 +88,108 @@ attributes as *file*.
 
 And that's it. We've just made a tiny installer that will successfully install
 **example.plugin** for our users.
+
+
+## Dependencies Network
+
+Right, our installer is a little too simple. Let's say you added a few more
+things to your plugin, that depended on another plugin. Why waste time reiventing
+the wheel?
+
+So now you need to make sure the other mod is installed before your own or it won't
+work. Let's say our plugin depends on **depend1.plugin**:
+
+```xml
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://qconsulting.ca/fo3/ModConfig5.0.xsd">
+
+    <moduleName>Example Mod</moduleName>
+
+    <moduleDependencies operator="And">
+        <fileDependency file="depend1.plugin" state="Active"/>
+    </moduleDependencies>
+
+    <requiredInstallFiles>
+        <file source="example.plugin"/>
+    </requiredInstallFiles>
+
+</config>
+```
+
+(Pay attention to the order of the tags! It's important!)
+
+*moduleDependencies* lists all the dependencies our mod needs fulfilled. It is
+the first thing the actual installer will check, even before installing the files
+in *requiredInstallFiles*. This dependency list is actually a shared format
+(meaning other tags will follow the same rules, even if their tag is different),
+so we'll refer back here whenever another shows up.
+
+The *operator* attribute shows how the dependencies will be resolved:
+
+- "And", every single dependency needs to be met
+- "Or", at least one dependency needs to be met
+
+*fileDependency*, much like the *file* tag, specifies a file, which in this case
+needs to exist in the **dest** folder. The *file* attribute is, unsurprisingly,
+the file to depend on, and *state* is which state the file can be in ("Active",
+"Inactive" and "Missing").
+
+And that's it, you now successfully depen... Awww shucks. You forgot another dependency!
+
+You also depend on another mod, but here the author was a bit messy. He changed
+the name of the installed file when he updated the version! You should never, ever,
+do this, but not everyone is as amazing, beautiful and articulate as we are.
+
+So now you depend on another two files, **depend2v1.plugin** and **depend2v2.plugin**.
+But your mod works with both, so you don't really care which the user has installed
+and you can't put both under the "And" operator since the user will only have one of them
+installed. Now we enter the domain of nested dependencies:
+
+```xml
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://qconsulting.ca/fo3/ModConfig5.0.xsd">
+
+    <moduleName>Example Mod</moduleName>
+
+    <moduleDependencies operator="And">
+        <fileDependency file="depend1.plugin" state="Active"/>
+        <dependencies operator="Or">
+            <fileDependency file="depend2v1.plugin" state="Active"/>
+            <fileDependency file="depend2v2.plugin" state="Active"/>
+        </dependencies>
+    </moduleDependencies>
+
+    <requiredInstallFiles>
+        <file source="example.plugin"/>
+    </requiredInstallFiles>
+
+</config>
+```
+
+The *dependencies* tag works exactly like *moduleDependencies* (remember what
+I said before?). It has the same attribute (*operator*, and it works the same way),
+the same possible children. You can even have another *dependencies* within it!
+
+So how does it all resolve? Let's start from the top:
+
+- *moduleDependencies*'s *operator* is "And" so we need to meet all dependencies;
+- First, the dependency on **depend1.plugin** is always mandatory;
+- Second, the nested *dependencies* has to be met too, so we go down:
+    - This *operator* is "Or" so at least on of these files has to exist;
+    - If either **depend2v1.plugin** or **depend2v2.plugin** exist, this is met.
+- And we go back up and check if if they're all met. If they are, installation moves on
+and if not, installation stops here and the actual installer complains!
+
+To finish off this section, there might be another useful tag to use with
+*moduleDependencies*: *gameDependency*. It's used like this:
+
+```xml
+<moduleDependencies>
+    <gameDependency version="1.0"/>
+</moduleDependencies>
+```
+
+It pretty much just specifies a minimum version of the game that the mod needs to be
+able to run.
+
+And finally, you now successfully depend on two other mods to install!

@@ -2,7 +2,7 @@
      is install some files without need for user
      interaction
      -->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="http://qconsulting.ca/fo3/ModConfig5.0.xsd">
     <moduleName>Minimal Example</moduleName>
     <requiredInstallFiles>
