@@ -33,6 +33,46 @@ Try hovering over the unknown words, that might help too.
 - Pull requests without a proper description will not be accepted.
 
 
+### Building the documentation
+
+The documentation is automatically built and uploaded to ReadTheDocs whenever it's pushed to this repo,
+however it may be useful to build locally to find typos and other errors before pushing.
+
+These instructions are for Linux only, I don't have a Windows machine available to test building and I
+never even came physically close to a Mac.
+
+
+#### Setup
+
+Follow the instructions on setting up a virtualenv from [here](https://askubuntu.com/questions/244641/how-to-set-up-and-use-a-virtual-python-environment-in-ubuntu)
+and then:
+
+```
+sudo apt install -y make
+make setup
+```
+
+
+#### Build
+
+```
+make docs
+```
+
+And that's it. If between builds it is prefered to use:
+
+```
+make
+```
+
+
+#### Cleanup
+
+```
+make clean
+```
+
+
 ## Glossary
 
 <dl>
