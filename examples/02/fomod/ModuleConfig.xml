@@ -12,18 +12,19 @@
          as well. The other possible value is "Or".
          -->
     <moduleDependencies operator="And">
-        <!-- Make sure other_file exists!
-             Another possible value for state is "Missing"
-             -->
-        <fileDependency file="other_file" state="Active"/>
+        <fileDependency file="depend1.plugin" state="Active"/>
+        <dependencies operator="Or">
+            <fileDependency file="depend2v1.plugin" state="Active"/>
+            <fileDependency file="depend2v2.plugin" state="Active"/>
+        </dependencies>
     </moduleDependencies>
 
     <!-- Now before installing our lovely and empty
          data file in requiredInstallFiles,
-         we need to make sure other_file exists
+         we need to make sure a few other plugins exist
          -->
     <requiredInstallFiles>
-        <file source="data_file" destination=""/>
+        <file source="example.plugin"/>
     </requiredInstallFiles>
 
 </config>

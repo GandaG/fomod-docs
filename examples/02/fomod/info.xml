@@ -1,33 +1,16 @@
-<!-- From now onwards, the info.xml will
-     always be complete. Not much point
-     in changing it as it is pretty simple
-     to figure out.
-     -->
 <fomod>
-    <!-- The name of the mod -->
     <Name>Example Mod</Name>
 
-    <!-- The author of the mod -->
     <Author>Example Author</Author>
 
-    <!-- The version of the mod.
-         Note that the attribute is
-         optional and specifies
-         a machine-readable version
-         string, like "1.2.3".
-         The version itself can be
-         whatever the author wants
-         -->
     <Version MachineVersion="1.2.3">
         1.2.3
     </Version>
 
-    <!-- A description for the mod -->
     <Description>
         This is an example mod.
     </Description>
 
-    <!-- The website for the mod -->
     <Website>
         https://example.website.com/example-mod
     </Website>

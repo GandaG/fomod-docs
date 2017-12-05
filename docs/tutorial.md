@@ -1,7 +1,11 @@
 # A FOMOD Tutorial
 
+At the end of each section there will be a link to an example
+package where you can see all that was discussed so far.
+
 Let's jump right in - we have finished our mod and we need to provide
 an installer.
+
 
 ## A Simple Installer
 
@@ -42,21 +46,26 @@ apps understand what it is about. So let's fill it in properly:
 ```xml
 <fomod>
     <Name>Example Mod</Name>
+
     <Author>Example Author</Author>
-    <Version>1.0</Version>
+
+    <Version MachineVersion="1.2.3">
+        1.2.3
+    </Version>
+
     <Description>
-        This is a description!
+        This is an example mod.
     </Description>
+
+    <Website>
+        https://example.website.com/example-mod
+    </Website>
 </fomod>
 ```
 
 See? It didn't hurt and now everyone else knows a little more about our mod!
 It should be pretty much self-explanatory but if you need a reminder on xml
 feel free to pause here and look at [W3Schools](http://www.w3schools.com/xml/).
-
-There are a few more things we could add to **info.xml** but for now it's enough.
-If you want to learn more about it, check out
-[example 02](https://github.com/fomod-lang/fomod/blob/master/examples/02/fomod/info.xml).
 
 Moving on! The **ModuleConfig.xml** is where the magic happens. Coincidentally,
 it's also the more complex and mind-numbing of the two. So we'll start slow and
@@ -88,6 +97,8 @@ attributes as *file*.
 
 And that's it. We've just made a tiny installer that will successfully install
 **example.plugin** for our users.
+
+[Example 01](https://github.com/GandaG/fomod-docs/tree/master/examples/01)
 
 
 ## Dependencies Network
@@ -193,3 +204,5 @@ It pretty much just specifies a minimum version of the game that the mod needs t
 able to run.
 
 And finally, you now successfully depend on two other mods to install!
+
+[Example 02](https://github.com/GandaG/fomod-docs/tree/master/examples/02)

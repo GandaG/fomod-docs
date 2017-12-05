@@ -4,11 +4,11 @@
      -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="http://qconsulting.ca/fo3/ModConfig5.0.xsd">
-    <moduleName>Minimal Example</moduleName>
+
+    <moduleName>Example Mod</moduleName>
+
     <requiredInstallFiles>
-        <!-- Only moduleName is actually required
-             but what fun would that be...
-             -->
-        <file source="data_file" destination=""/>
+        <file source="example.plugin"/>
     </requiredInstallFiles>
+
 </config>
