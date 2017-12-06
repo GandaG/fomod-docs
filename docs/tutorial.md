@@ -219,7 +219,9 @@ two features:
     .
     ├── fomod
     │   ├── info.xml
-    │   └── ModuleConfig.xml
+    │   ├── ModuleConfig.xml
+	│   ├── option_a.png
+	│   └── option_b.png
     ├── example_a.plugin
     ├── example_b.plugin
     └── readme.txt
@@ -332,7 +334,9 @@ package and *installSteps* should look like this instead:
     .
     ├── fomod
     │   ├── info.xml
-    │   └── ModuleConfig.xml
+    │   ├── ModuleConfig.xml
+	│   ├── option_a.png
+	│   └── option_b.png
     ├── option_a
     │   └── example.plugin
     ├── option_b
@@ -372,10 +376,194 @@ package and *installSteps* should look like this instead:
 </installSteps>
 ```
 
+[Example 03](https://github.com/GandaG/fomod-docs/tree/master/examples/03)
+
+
+## Flags and You
+
+Your mod's new version now features a choice between textures: Blue or Red.
+But you needed to make a version of each texture for each plugin version:
+
+	.
+	├── fomod
+	│   ├── info.xml
+	│   ├── ModuleConfig.xml
+	│   ├── option_a.png
+	│   ├── option_b.png
+	│   ├── texture_blue.png
+	│   └── texture_red.png
+	├── plugin_a
+	│   └── example.plugin
+	├── plugin_b
+	│   └── example.plugin
+	├── texture_blue_a
+	│   └── texture.tga
+	├── texture_blue_b
+	│   └── texture.tga
+	├── texture_red_a
+	│   └── texture.tga
+	└── texture_red_b
+		└── texture.tga
+
+Ugh, it's getting complex. Let's see what we can make of our steps:
+
+```xml
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://qconsulting.ca/fo3/ModConfig5.0.xsd">
+
+    <moduleName>Example Mod</moduleName>
+
+    <moduleDependencies operator="And">
+        <fileDependency file="depend1.plugin" state="Active"/>
+        <dependencies operator="Or">
+            <fileDependency file="depend2v1.plugin" state="Active"/>
+            <fileDependency file="depend2v2.plugin" state="Active"/>
+        </dependencies>
+    </moduleDependencies>
+
+	<installSteps order="Explicit">
+
+        <installStep name="Choose Option">
+            <optionalFileGroups order="Explicit">
+                <group name="Select an option:" type="SelectExactlyOne">
+                    <plugins order="Explicit">
+
+                        <plugin name="Option A">
+                            <description>Select this to install Option A!</description>
+                            <image path="fomod/option_a.png"/>
+                            <files>
+                                <folder source="option_a"/>
+                            </files>
+                            <conditionFlags>
+                                <flag name="option_a">selected</flag>
+                            </conditionFlags>
+                            <typeDescriptor>
+                                <type name="Recommended"/>
+                            </typeDescriptor>
+                        </plugin>
+
+                        <plugin name="Option B">
+                            <description>Select this to install Option B!</description>
+                            <image path="fomod/option_b.png"/>
+                            <files>
+                                <folder source="option_b"/>
+                            </files>
+                            <conditionFlags>
+                                <flag name="option_b">selected</flag>
+                            </conditionFlags>
+                            <typeDescriptor>
+                                <type name="Optional"/>
+                            </typeDescriptor>
+                        </plugin>
+
+                    </plugins>
+                </group>
+            </optionalFileGroups>
+        </installStep>
+
+        <installStep name="Choose Texture">
+            <visible>
+                <flagDependency flag="option_a" value="selected"/>
+            </visible>
+            <optionalFileGroups order="Explicit">
+                <group name="Select a texture:" type="SelectExactlyOne">
+                    <plugins order="Explicit">
+
+                        <plugin name="Texture Blue">
+                            <description>Select this to install Texture Blue!</description>
+                            <image path="fomod/texture_blue.png"/>
+                            <files>
+                                <folder source="texture_blue_a"/>
+                            </files>
+                            <typeDescriptor>
+                                <type name="Optional"/>
+                            </typeDescriptor>
+                        </plugin>
+
+                        <plugin name="Texture Red">
+                            <description>Select this to install Texture Red!</description>
+                            <image path="fomod/texture_red.png"/>
+                            <files>
+                                <folder source="texture_red_a"/>
+                            </files>
+                            <typeDescriptor>
+                                <type name="Optional"/>
+                            </typeDescriptor>
+                        </plugin>
+
+                    </plugins>
+                </group>
+            </optionalFileGroups>
+        </installStep>
+
+        <installStep name="Choose Texture">
+            <visible>
+                <flagDependency flag="option_b" value="selected"/>
+            </visible>
+            <optionalFileGroups order="Explicit">
+                <group name="Select a texture:" type="SelectExactlyOne">
+                    <plugins order="Explicit">
+
+                        <plugin name="Texture Blue">
+                            <description>Select this to install Texture Blue!</description>
+                            <image path="fomod/texture_blue.png"/>
+                            <files>
+                                <folder source="texture_blue_b"/>
+                            </files>
+                            <typeDescriptor>
+                                <type name="Optional"/>
+                            </typeDescriptor>
+                        </plugin>
+
+                        <plugin name="Texture Red">
+                            <description>Select this to install Texture Red!</description>
+                            <image path="fomod/texture_red.png"/>
+                            <files>
+                                <folder source="texture_red_b"/>
+                            </files>
+                            <typeDescriptor>
+                                <type name="Optional"/>
+                            </typeDescriptor>
+                        </plugin>
+
+                    </plugins>
+                </group>
+            </optionalFileGroups>
+        </installStep>
+
+    </installSteps>
+
+</config>
+```
+
+The most obvious change was the addition of two new steps, but we'll get
+there later.
+
+First let's talk about the existing step. A couple of new tags were added:
+*conditionFlags* and *flag*. *conditionFlags* works much like *files* but for
+flags - sets the flag to the value you want whenever the option is selected.
+
+Within *plugin* at least one of either *conditionFlags* or *plugin* must exist
+in any order.
+
+A flag is like a marker with a name and a value that you control. It does
+nothing by itself but is amazing at communicating things throughout the
+installer - here we use it to tell the other two steps what was the option
+the user chose. To resume, set the *flag* name with the *name* attribute and
+its value with the element's text.
+
+And on to the two last steps. The new tag here is *visible*, which is a
+[dependency network](#dependencies-network). This tag manages whether the step
+is visible or not - if its conditions are met then the step is shown to the
+user, otherwise it's skipped.
+
+In the first of these two steps we're installing the textures that correspond
+with option A in the first step so we make sure to depend on the flag we set
+on option A for visiblity. In the last one we do the opposite!
+
 That's it really, most of you can now go on making installers for your mods.
 As you can see, fomod is actually pretty simple! And for the brave ones or
 those who need a little more to spice up their installer I'll be waiting for
 you at the next section!
 
-
-[Example 03](https://github.com/GandaG/fomod-docs/tree/master/examples/03)
+[Example 04](https://github.com/GandaG/fomod-docs/tree/master/examples/04)
