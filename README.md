@@ -1,4 +1,4 @@
-# FOMOD
+# fomod Documentation
 
 *A game-agnostic mod installer format.*
 
