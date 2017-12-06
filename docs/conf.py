@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# fomod Standard documentation build configuration file, created by
+# fomod Docs documentation build configuration file, created by
 # sphinx-quickstart on Wed Feb  8 23:07:33 2017.
 #
 # This file is execfile()d with the current directory set to its
@@ -49,7 +49,7 @@ source_parsers = {
 master_doc = 'index'
 
 # General information about the project.
-project = u'fomod Standard'
+project = u'fomod Docs'
 copyright = u'2017, Daniel Nunes and the fomod team'
 author = u'Daniel Nunes and the fomod team'
 
@@ -203,7 +203,7 @@ html_static_path = ['_static']
 #html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'fomodStandarddoc'
+htmlhelp_basename = 'fomodDocs'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -225,7 +225,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'fomodStandard.tex', u'fomod Standard Documentation',
+    (master_doc, 'fomodDocs.tex', u'fomod Documentation',
      u'Daniel Nunes and the fomod team', 'manual'),
 ]
 
@@ -255,7 +255,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'fomodstandard', u'fomod Standard Documentation',
+    (master_doc, 'fomodDocs', u'fomod Documentation',
      [author], 1)
 ]
 
@@ -269,8 +269,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'fomodStandard', u'fomod Standard Documentation',
-     author, 'fomodStandard', 'One line description of project.',
+    (master_doc, 'fomodDocs', u'fomod Documentation',
+     author, 'fomodDocs', 'One line description of project.',
      'Miscellaneous'),
 ]
 

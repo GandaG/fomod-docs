@@ -1,4 +1,4 @@
-# A FOMOD Tutorial
+# A fomod Tutorial
 
 At the end of each section there will be a link to an example
 package where you can see all that was discussed so far.
