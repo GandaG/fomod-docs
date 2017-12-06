@@ -10,6 +10,7 @@ authors and installer authors.
 ## Contents
 
 * [Tutorial](tutorial.md)
+* [Tips and Tricks](tips.md)
 
 ## XML Files
 

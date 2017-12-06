@@ -1,0 +1,86 @@
+<!-- On the third example, we'll take a look at using
+     install steps to let users choose what to install
+     -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://qconsulting.ca/fo3/ModConfig5.0.xsd">
+
+    <moduleName>Example Mod</moduleName>
+
+    <moduleDependencies operator="And">
+        <fileDependency file="depend1.plugin" state="Active"/>
+        <dependencies operator="Or">
+            <fileDependency file="depend2v1.plugin" state="Active"/>
+            <fileDependency file="depend2v2.plugin" state="Active"/>
+        </dependencies>
+    </moduleDependencies>
+
+    <!-- We'll no longer be using "requiredInstallFiles"
+         since we can now offer a choice between files
+         -->
+	<installSteps order="Explicit">
+        <installStep name="Choose Option">
+
+            <!-- In 99.9% of cases you'll want to set
+                 the 'order' attribute in "installSteps",
+                 "optionalFileGroups" and "plugins" to
+                 'Explicit'
+                 -->
+            <optionalFileGroups order="Explicit">
+
+                <!-- This tag collects options into separate
+                     groups - useful if you want to have multiple
+                     types of choices for the user in a single
+                     step
+                     -->
+                <group name="Select an option:" type="SelectExactlyOne">
+                    <plugins order="Explicit">
+
+                        <!-- Each "plugin" tag represents a choice
+                             the user can make.
+                             -->
+                        <plugin name="Option A">
+
+                            <description>Select this to install Option A!</description>
+
+                            <!-- Optional but recommended
+                                 -->
+                            <image path="fomod/option_a.png"/>
+
+                            <!-- The files/folders to install
+                                 -->
+                            <files>
+                                <folder source="option_a"/>
+                            </files>
+
+                            <!-- This describes what type the plugin is.
+                                 Most likely you'll choose between:
+                                 - 'Optional'
+                                 - 'Required'
+                                 - 'Recommended'
+                                 -->
+                            <typeDescriptor>
+                                <type name="Recommended"/>
+                            </typeDescriptor>
+
+                        </plugin>
+
+                        <plugin name="Option B">
+                            <description>Select this to install Option B!</description>
+                            <image path="fomod/option_b.png"/>
+                            <files>
+                                <folder source="option_b"/>
+                            </files>
+                            <typeDescriptor>
+                                <type name="Optional"/>
+                            </typeDescriptor>
+                        </plugin>
+
+                    </plugins>
+                </group>
+
+            </optionalFileGroups>
+
+        </installStep>
+    </installSteps>
+
+</config>

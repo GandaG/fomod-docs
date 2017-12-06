@@ -13,7 +13,7 @@ We'll start with a simple example, here's how our package looks:
 
     .
     ├── example.plugin
-    ├── readme.txt
+    └── readme.txt
 
 Don't forget that the . (dot) simbolizes our current directory.
 
@@ -31,7 +31,7 @@ package should now look like:
     │   ├── info.xml
     │   └── ModuleConfig.xml
     ├── example.plugin
-    ├── readme.txt
+    └── readme.txt
 
 Start with **info.xml**. You could type this in and be done with it:
 
@@ -206,3 +206,176 @@ able to run.
 And finally, you now successfully depend on two other mods to install!
 
 [Example 02](https://github.com/GandaG/fomod-docs/tree/master/examples/02)
+
+
+## A Step Forward
+
+And we finally get to the most important part of the installer -
+the installation steps.
+
+You've worked a bit more on your mod and now you offer users a choice between
+two features:
+
+    .
+    ├── fomod
+    │   ├── info.xml
+    │   └── ModuleConfig.xml
+    ├── example_a.plugin
+    ├── example_b.plugin
+    └── readme.txt
+
+So now let's go step-by-step in understanding how to present this to the user:
+
+```xml
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://qconsulting.ca/fo3/ModConfig5.0.xsd">
+
+    <moduleName>Example Mod</moduleName>
+
+    <moduleDependencies operator="And">
+        <fileDependency file="depend1.plugin" state="Active"/>
+        <dependencies operator="Or">
+            <fileDependency file="depend2v1.plugin" state="Active"/>
+            <fileDependency file="depend2v2.plugin" state="Active"/>
+        </dependencies>
+    </moduleDependencies>
+
+	<installSteps order="Explicit">
+        <installStep name="Choose Option">
+            <optionalFileGroups order="Explicit">
+                <group name="Select an option:" type="SelectExactlyOne">
+                    <plugins order="Explicit">
+
+                        <plugin name="Option A">
+                            <description>Select this to install Option A!</description>
+                            <image path="fomod/option_a.png"/>
+                            <files>
+                                <file source="example_a.plugin"/>
+                            </files>
+                            <typeDescriptor>
+                                <type name="Recommended"/>
+                            </typeDescriptor>
+                        </plugin>
+
+                        <plugin name="Option B">
+                            <description>Select this to install Option B!</description>
+                            <image path="fomod/option_b.png"/>
+                            <files>
+                                <file source="example_b.plugin"/>
+                            </files>
+                            <typeDescriptor>
+                                <type name="Optional"/>
+                            </typeDescriptor>
+                        </plugin>
+
+                    </plugins>
+                </group>
+            </optionalFileGroups>
+        </installStep>
+    </installSteps>
+
+</config>
+```
+
+Don't panic. First, *requiredInstallFiles* was removed since we no longer need
+it.
+
+*installSteps* is the root tag for this portion. All it does is contain the
+individual steps and set the order they appear in via the *order* attribute.
+Like with the *optionalFileGroups* and *plugins* tags, you'll want to keep
+this value to "Explicit". For more info on this take a look at the
+[Tips and Tricks](tips.md).
+
+Next, *installStep*. The step itself and for now all it does is name the step
+(*name* attribute) and hold the next tag.
+
+*optionalFileGroups*, has the same *order* attribute as *installSteps* and
+does nothing more than holding groups.
+
+*group* is an interesting tag - all options, or *plugins*, below here will be
+grouped and all groups in the same step will be visible at once. This allows
+the user to make several choices in the same step and is incredibly useful
+for you (less work) as long as these choices don't require interaction between
+them (which we'll get to in the next section!).
+
+So the *group* tag holds the *plugins* and you get to define the name of the
+group (*name* attribute) and its type. I won't waste time explaining them
+since they're so simple and self-explanatory: "SelectAny", "SelectAll",
+"SelectExactlyOne", "SelectAtMostOne" and "SelectAtLeastOne".
+
+Unlike the previous tag, *plugins* is boring. Same deal as *optionalFileGroups*
+but with plugins.
+
+*plugin* is where all the magic happens. This corresponds to an option the user
+can take during installation. The *name* attribute is what the option will be
+called and *description* the... description. While it is not required to set an
+*image* for this option it is highly recommended.
+
+In *files* you set the files you want to install if this option is selected,
+exactly the same way as *requiredInstallFiles*. Lastly, *typeDescriptor* is a
+bit complex but for what we want and need most of the time what you see in the
+example is enough. In the *name* attribute in *type* you have a choice between:
+
+- "Optional", where the option is... optional. Yep.
+- "Required", where the user doesn't really have a choice. Useful for including
+  small readmes during the installation and hoping the user reads them this way.
+- "Recommended", where the option is usually pre-selected. Be careful as
+  implementation of this varies.
+
+There are actually two more possible but they're useless.
+
+To finish this section here's a little piece of advice - try to keep your files
+the same name regardless of version and user options. Other's tools may be
+depending on it and it's considered general courtesy to do so. So our example's
+package and *installSteps* should look like this instead:
+
+    .
+    ├── fomod
+    │   ├── info.xml
+    │   └── ModuleConfig.xml
+    ├── option_a
+    │   └── example.plugin
+    ├── option_b
+    │   └── example.plugin
+    └── readme.txt
+
+```xml
+<installSteps order="Explicit">
+    <installStep name="Choose Option">
+        <optionalFileGroups order="Explicit">
+            <group name="Select an option:" type="SelectExactlyOne">
+                <plugins order="Explicit">
+                    <plugin name="Option A">
+                        <description>Select this to install Option A!</description>
+                        <image path="fomod/option_a.png"/>
+                        <files>
+                            <folder source="option_a"/>
+                        </files>
+                        <typeDescriptor>
+                            <type name="Recommended"/>
+                        </typeDescriptor>
+                    </plugin>
+                    <plugin name="Option B">
+                        <description>Select this to install Option B!</description>
+                        <image path="fomod/option_b.png"/>
+                        <files>
+                            <folder source="option_b"/>
+                        </files>
+                        <typeDescriptor>
+                            <type name="Optional"/>
+                        </typeDescriptor>
+                    </plugin>
+                </plugins>
+            </group>
+        </optionalFileGroups>
+    </installStep>
+</installSteps>
+```
+
+That's it really, most of you can now go on making installers for your mods.
+As you can see, fomod is actually pretty simple! And for the brave ones or
+those who need a little more to spice up their installer I'll be waiting for
+you at the next section!
+
+
+[Example 03](https://github.com/GandaG/fomod-docs/tree/master/examples/03)
