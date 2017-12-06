@@ -1,7 +1,7 @@
 install:
     - sudo apt-get -qq update
-    - sudo apt-get install -y libxml2-utils curl
+    - sudo apt-get install -y make
+    - make setup
 
 script:
-    - curl -o fomod.xsd https://raw.githubusercontent.com/GandaG/fomod-schema/5.0/ModuleConfig.xsd
-    - find examples/ -name "ModuleConfig.xml" -print0 | xargs -0 -n1 xmllint --noout --schema fomod.xsd
+    - make test
