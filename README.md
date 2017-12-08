@@ -56,15 +56,8 @@ make setup
 #### Build
 
 ```
-make docs
-```
-
-And that's it. If between builds it is prefered to use:
-
-```
 make
 ```
-
 
 #### Cleanup
 

@@ -1,4 +1,4 @@
-# The fomod Docs
+# The fomod Documentation
 
 *fomod* is game-agnostic format for mod installers, written in xml.
 
@@ -7,13 +7,10 @@ with the most widely used options, and a collection of conventions
 to make some specifics clearer for both *fomod* authors and installer
 authors.
 
+This documentation was written for the `5.x` major releases.
+
 ## Contents
 
 * [Tutorial](tutorial.md)
 * [Tips and Tricks](tips.md)
-
-## XML Files
-
-You can find the schema documentation here:
-
-- [ModuleConfig Schema](_static/ModuleConfig.html)
+* [Specification](specs.md)
