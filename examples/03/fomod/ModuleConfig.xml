@@ -17,7 +17,7 @@
     <!-- We'll no longer be using "requiredInstallFiles"
          since we can now offer a choice between files
          -->
-	<installSteps order="Explicit">
+    <installSteps order="Explicit">
         <installStep name="Choose Option">
 
             <!-- In 99.9% of cases you'll want to set

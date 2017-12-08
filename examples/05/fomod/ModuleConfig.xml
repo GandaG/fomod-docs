@@ -1,5 +1,5 @@
-<!-- This time we'll take a look at multiple step
-     installs - flags and visiblity
+<!-- For this final example, we'll take a look at the
+     conditional file installation.
      -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="http://qconsulting.ca/fo3/ModConfig5.0.xsd">
@@ -15,25 +15,15 @@
     </moduleDependencies>
 
     <installSteps order="Explicit">
-
         <installStep name="Choose Option">
             <optionalFileGroups order="Explicit">
+
                 <group name="Select an option:" type="SelectExactlyOne">
                     <plugins order="Explicit">
 
                         <plugin name="Option A">
                             <description>Select this to install Option A!</description>
                             <image path="fomod/option_a.png"/>
-                            <files>
-                                <folder source="option_a"/>
-                            </files>
-                            <!-- conditionFlags and files have interchangeable
-                                 order and at least one of them needs to be
-                                 present.
-
-                                 conditionFlags sets flags whenever this plugin
-                                 is selected.
-                                 -->
                             <conditionFlags>
                                 <flag name="option_a">selected</flag>
                             </conditionFlags>
@@ -45,9 +35,6 @@
                         <plugin name="Option B">
                             <description>Select this to install Option B!</description>
                             <image path="fomod/option_b.png"/>
-                            <files>
-                                <folder source="option_b"/>
-                            </files>
                             <conditionFlags>
                                 <flag name="option_b">selected</flag>
                             </conditionFlags>
@@ -58,28 +45,20 @@
 
                     </plugins>
                 </group>
-            </optionalFileGroups>
-        </installStep>
 
-        <installStep name="Choose Texture">
-            <!-- visible is a dependencies network that lets this
-                 step appear only when it's conditions are met.
-
-                 If they're not met, this step is skipped.
-                 -->
-            <visible>
-                <flagDependency flag="option_a" value="selected"/>
-            </visible>
-            <optionalFileGroups order="Explicit">
+                <!-- Since we're installing everything in
+                     conditionalFileInstalls we're free to
+                     make all selections in a single step.
+                     -->
                 <group name="Select a texture:" type="SelectExactlyOne">
                     <plugins order="Explicit">
 
                         <plugin name="Texture Blue">
                             <description>Select this to install Texture Blue!</description>
                             <image path="fomod/texture_blue.png"/>
-                            <files>
-                                <folder source="texture_blue_a"/>
-                            </files>
+                            <conditionFlags>
+                                <flag name="texture_blue">selected</flag>
+                            </conditionFlags>
                             <typeDescriptor>
                                 <type name="Optional"/>
                             </typeDescriptor>
@@ -88,9 +67,9 @@
                         <plugin name="Texture Red">
                             <description>Select this to install Texture Red!</description>
                             <image path="fomod/texture_red.png"/>
-                            <files>
-                                <folder source="texture_red_a"/>
-                            </files>
+                            <conditionFlags>
+                                <flag name="texture_red">selected</flag>
+                            </conditionFlags>
                             <typeDescriptor>
                                 <type name="Optional"/>
                             </typeDescriptor>
@@ -98,44 +77,60 @@
 
                     </plugins>
                 </group>
+
             </optionalFileGroups>
         </installStep>
-
-        <installStep name="Choose Texture">
-            <visible>
-                <flagDependency flag="option_b" value="selected"/>
-            </visible>
-            <optionalFileGroups order="Explicit">
-                <group name="Select a texture:" type="SelectExactlyOne">
-                    <plugins order="Explicit">
-
-                        <plugin name="Texture Blue">
-                            <description>Select this to install Texture Blue!</description>
-                            <image path="fomod/texture_blue.png"/>
-                            <files>
-                                <folder source="texture_blue_b"/>
-                            </files>
-                            <typeDescriptor>
-                                <type name="Optional"/>
-                            </typeDescriptor>
-                        </plugin>
-
-                        <plugin name="Texture Red">
-                            <description>Select this to install Texture Red!</description>
-                            <image path="fomod/texture_red.png"/>
-                            <files>
-                                <folder source="texture_red_b"/>
-                            </files>
-                            <typeDescriptor>
-                                <type name="Optional"/>
-                            </typeDescriptor>
-                        </plugin>
-
-                    </plugins>
-                </group>
-            </optionalFileGroups>
-        </installStep>
-
     </installSteps>
+
+    <!-- This is where we're installing everything.
+         -->
+    <conditionalFileInstalls>
+        <patterns>
+            <!-- Each pattern is a piece of the matrix
+                 eseentially linking a set of dependencies
+                 to a set of files to install.
+                 -->
+            <pattern>
+                <dependencies operator="And">
+                    <flagDependency flag="option_a" value="selected"/>
+                    <flagDependency flag="texture_blue" value="selected"/>
+                </dependencies>
+                <files>
+                    <folder source="option_a"/>
+                    <folder source="texture_blue_a"/>
+                </files>
+            </pattern>
+            <pattern>
+                <dependencies operator="And">
+                    <flagDependency flag="option_a" value="selected"/>
+                    <flagDependency flag="texture_red" value="selected"/>
+                </dependencies>
+                <files>
+                    <folder source="option_a"/>
+                    <folder source="texture_red_a"/>
+                </files>
+            </pattern>
+            <pattern>
+                <dependencies operator="And">
+                    <flagDependency flag="option_b" value="selected"/>
+                    <flagDependency flag="texture_blue" value="selected"/>
+                </dependencies>
+                <files>
+                    <folder source="option_b"/>
+                    <folder source="texture_blue_b"/>
+                </files>
+            </pattern>
+            <pattern>
+                <dependencies operator="And">
+                    <flagDependency flag="option_b" value="selected"/>
+                    <flagDependency flag="texture_red" value="selected"/>
+                </dependencies>
+                <files>
+                    <folder source="option_b"/>
+                    <folder source="texture_red_b"/>
+                </files>
+            </pattern>
+        </patterns>
+    </conditionalFileInstalls>
 
 </config>

@@ -567,3 +567,169 @@ those who need a little more to spice up their installer I'll be waiting for
 you at the next section!
 
 [Example 04](https://github.com/GandaG/fomod-docs/tree/master/examples/04)
+
+
+## The Installation Matrix
+
+So you've finished reading the last section and maybe you thought -
+*"so if for each choice dependent on a previous one I have to make
+a new install step, what if I had 10 choices for the user? 20?"* -
+and you thought very well. In truth, if you followed the previous
+and you had the user make 10 dependent choices between two options
+you'd need to make 1023 (`$ a_n=-1+2^n $`, where `$ n $` is the number
+of choices for the user to make) installation steps.
+
+Instead, you could create an installation matrix:
+
+
+```xml
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://qconsulting.ca/fo3/ModConfig5.0.xsd">
+
+    <moduleName>Example Mod</moduleName>
+
+    <moduleDependencies operator="And">
+        <fileDependency file="depend1.plugin" state="Active"/>
+        <dependencies operator="Or">
+            <fileDependency file="depend2v1.plugin" state="Active"/>
+            <fileDependency file="depend2v2.plugin" state="Active"/>
+        </dependencies>
+    </moduleDependencies>
+
+    <installSteps order="Explicit">
+        <installStep name="Choose Option">
+            <optionalFileGroups order="Explicit">
+
+                <group name="Select an option:" type="SelectExactlyOne">
+                    <plugins order="Explicit">
+
+                        <plugin name="Option A">
+                            <description>Select this to install Option A!</description>
+                            <image path="fomod/option_a.png"/>
+                            <conditionFlags>
+                                <flag name="option_a">selected</flag>
+                            </conditionFlags>
+                            <typeDescriptor>
+                                <type name="Recommended"/>
+                            </typeDescriptor>
+                        </plugin>
+
+                        <plugin name="Option B">
+                            <description>Select this to install Option B!</description>
+                            <image path="fomod/option_b.png"/>
+                            <conditionFlags>
+                                <flag name="option_b">selected</flag>
+                            </conditionFlags>
+                            <typeDescriptor>
+                                <type name="Optional"/>
+                            </typeDescriptor>
+                        </plugin>
+
+                    </plugins>
+                </group>
+
+                <group name="Select a texture:" type="SelectExactlyOne">
+                    <plugins order="Explicit">
+
+                        <plugin name="Texture Blue">
+                            <description>Select this to install Texture Blue!</description>
+                            <image path="fomod/texture_blue.png"/>
+                            <conditionFlags>
+                                <flag name="texture_blue">selected</flag>
+                            </conditionFlags>
+                            <typeDescriptor>
+                                <type name="Optional"/>
+                            </typeDescriptor>
+                        </plugin>
+
+                        <plugin name="Texture Red">
+                            <description>Select this to install Texture Red!</description>
+                            <image path="fomod/texture_red.png"/>
+                            <conditionFlags>
+                                <flag name="texture_red">selected</flag>
+                            </conditionFlags>
+                            <typeDescriptor>
+                                <type name="Optional"/>
+                            </typeDescriptor>
+                        </plugin>
+
+                    </plugins>
+                </group>
+
+            </optionalFileGroups>
+        </installStep>
+    </installSteps>
+
+    <conditionalFileInstalls>
+        <patterns>
+            <pattern>
+                <dependencies operator="And">
+                    <flagDependency flag="option_a" value="selected"/>
+                    <flagDependency flag="texture_blue" value="selected"/>
+                </dependencies>
+                <files>
+                    <folder source="option_a"/>
+                    <folder source="texture_blue_a"/>
+                </files>
+            </pattern>
+            <pattern>
+                <dependencies operator="And">
+                    <flagDependency flag="option_a" value="selected"/>
+                    <flagDependency flag="texture_red" value="selected"/>
+                </dependencies>
+                <files>
+                    <folder source="option_a"/>
+                    <folder source="texture_red_a"/>
+                </files>
+            </pattern>
+            <pattern>
+                <dependencies operator="And">
+                    <flagDependency flag="option_b" value="selected"/>
+                    <flagDependency flag="texture_blue" value="selected"/>
+                </dependencies>
+                <files>
+                    <folder source="option_b"/>
+                    <folder source="texture_blue_b"/>
+                </files>
+            </pattern>
+            <pattern>
+                <dependencies operator="And">
+                    <flagDependency flag="option_b" value="selected"/>
+                    <flagDependency flag="texture_red" value="selected"/>
+                </dependencies>
+                <files>
+                    <folder source="option_b"/>
+                    <folder source="texture_red_b"/>
+                </files>
+            </pattern>
+        </patterns>
+    </conditionalFileInstalls>
+
+</config>
+```
+
+Granted, the number of matrix items (*pattern* tags) you'll need to create in
+this specific 2 options/choice example is always going to be higher (`$ a_n=2^n $`,
+where `$ n $` is the number of choices for the user to make) than the number of
+installation steps needed for the same number of choices, BUT you can better
+organize your steps into groups since they're no longer dependent on each other
+and this matrix is mostly copy-paste while replacing a few things, while the
+steps need careful adjustements of the *visible*, *files* and *conditionFlags* tags.
+
+It also looks much better this way.
+
+As you may have understood by now, *conditionalFileInstalls* allows you to create
+a matrix of *pattern* tags. The mod manager/installer will run through each of
+these, check *dependencies* and if they match, install anything under *files*.
+We've talked about these tags before, they work exactly the same way.
+
+And that's it really. All major sections were talked about and you're ready to
+tackle 99.9% of the *fomod* installers out there. There are a few minor things
+that also exist but they're so rarely needed that they can be safely ignored by
+most people. To take a look at some of them continue on to [Tips and Tricks](tips.md)
+and if you need something else that isn't even covered there head on over to
+[Specification](specs.md) for a complete and exhaustive look at the schema.
+
+Hope you learned something and good luck!
+
+[Example 05](https://github.com/GandaG/fomod-docs/tree/master/examples/05)
